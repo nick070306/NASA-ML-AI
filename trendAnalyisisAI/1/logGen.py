@@ -1,5 +1,6 @@
 import math
 import csv
+import random
 
 def generate_values(line_type, num_points=10, **kwargs):
     """Generate values based on the selected line type and parameters."""
@@ -28,9 +29,15 @@ def generate_values(line_type, num_points=10, **kwargs):
     else:
         raise ValueError("Invalid line type selected.")
 
+def randomize_values(data, lower_range, upper_range):
+    """Randomize the generated values within a specified range."""
+    randomized_data = {}
+    for key, values in data.items():
+        randomized_data[key] = {x: v + random.uniform(lower_range, upper_range) for x, v in values.items()}
+    return randomized_data
+
 def save_to_csv(data, filename):
     """Save the generated dictionary to a CSV file."""
-    # Open the file for writing
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
         
@@ -93,6 +100,16 @@ def main():
     print("\nGenerated dictionary:")
     for key, values in result.items():
         print(f"{key}: {values}")
+    
+    # Ask if the user wants to randomize the values
+    randomize_choice = input("\nDo you want to randomize the values? (y/n): ").strip().lower()
+    if randomize_choice == 'y':
+        lower_range = float(input("Enter the lower bound for randomization: "))
+        upper_range = float(input("Enter the upper bound for randomization: "))
+        result = randomize_values(result, lower_range, upper_range)
+        print("\nRandomized dictionary:")
+        for key, values in result.items():
+            print(f"{key}: {values}")
     
     # Ask if the user wants to save to a CSV file
     save_choice = input("\nDo you want to save the results to a CSV file? (y/n): ").strip().lower()
